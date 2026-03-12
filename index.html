@@ -8,9 +8,7 @@
 <style>
   :root {
     --white-bg: #F5F0E8;
-    --white-dark: #D4C9A8;
     --black-bg: #1A1A1A;
-    --black-mid: #2D2D2D;
     --black-text: #E8E0CC;
     --accent: #C8993C;
     --accent-light: #E8B84B;
@@ -31,7 +29,6 @@
     overflow: hidden;
   }
 
-  /* SETUP SCREEN */
   #setup {
     width: 100%;
     max-width: 420px;
@@ -51,12 +48,7 @@
   }
 
   .setup-title span { color: #fff; }
-
-  .chess-icon {
-    text-align: center;
-    font-size: 48px;
-    margin-bottom: -8px;
-  }
+  .chess-icon { text-align: center; font-size: 48px; margin-bottom: -8px; }
 
   .player-setup {
     background: #1E1E1E;
@@ -92,10 +84,7 @@
 
   .player-name-input:focus { border-color: var(--accent); }
 
-  .piece-selector {
-    display: flex;
-    gap: 8px;
-  }
+  .piece-selector { display: flex; gap: 8px; }
 
   .piece-btn {
     flex: 1;
@@ -115,17 +104,8 @@
     color: #999;
   }
 
-  .piece-btn.selected-white {
-    border-color: #fff;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-  }
-
-  .piece-btn.selected-black {
-    border-color: var(--accent);
-    background: rgba(200,153,60,0.15);
-    color: var(--accent);
-  }
+  .piece-btn.selected-white { border-color: #fff; background: rgba(255,255,255,0.1); color: #fff; }
+  .piece-btn.selected-black { border-color: var(--accent); background: rgba(200,153,60,0.15); color: var(--accent); }
 
   .time-section {
     background: #1E1E1E;
@@ -167,11 +147,7 @@
   .time-opt:hover { border-color: #555; color: #ccc; }
   .time-opt.active { border-color: var(--accent); color: var(--accent); background: rgba(200,153,60,0.1); }
 
-  .custom-time {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .custom-time { display: flex; align-items: center; gap: 10px; }
 
   .custom-time input {
     flex: 1;
@@ -224,101 +200,93 @@
     justify-content: center;
     cursor: pointer;
     position: relative;
-    transition: all 0.2s;
+    transition: background 0.2s, opacity 0.2s;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    border: none;
-    outline: none;
   }
 
-  /* Player 2 (top) - flipped */
-  .player-panel.top {
-    background: var(--black-bg);
-    transform-origin: center;
-  }
-
-  .player-panel.top .panel-content {
-    transform: rotate(180deg);
-  }
-
-  /* Player 1 (bottom) */
-  .player-panel.bottom {
-    background: var(--white-bg);
-  }
-
-  /* Active state */
-  .player-panel.active.top {
-    background: #111;
-  }
-
-  .player-panel.active.bottom {
-    background: #F0E8D0;
-  }
-
-  /* Inactive (dimmed) */
-  .player-panel.inactive {
-    opacity: 0.5;
-    filter: grayscale(30%);
-  }
+  .player-panel.top { background: var(--black-bg); }
+  .player-panel.top .panel-content { transform: rotate(180deg); }
+  .player-panel.bottom { background: var(--white-bg); }
+  .player-panel.active.top { background: #0F0F0F; }
+  .player-panel.active.bottom { background: #EDE5CC; }
+  .player-panel.inactive { opacity: 0.45; filter: grayscale(20%); }
 
   .panel-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 20px;
+    gap: 6px;
+    padding: 16px;
     width: 100%;
   }
 
   .player-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
   }
 
-  .top .player-label { color: #666; }
-  .bottom .player-label { color: #999; }
+  .top .player-label { color: #555; }
+  .bottom .player-label { color: #888; }
   .active.top .player-label { color: var(--accent); }
-  .active.bottom .player-label { color: #888; }
+  .active.bottom .player-label { color: #777; }
 
   .player-name-display {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
+    font-size: 26px;
     letter-spacing: 3px;
   }
 
   .top .player-name-display { color: var(--black-text); }
   .bottom .player-name-display { color: #2A1A00; }
 
-  .piece-display {
-    font-size: 32px;
-    line-height: 1;
-  }
+  .piece-display { font-size: 28px; line-height: 1; }
 
-  .timer-display {
+  /* Timer display with tenths */
+  .timer-wrap {
+    display: flex;
+    align-items: baseline;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(80px, 22vw, 140px);
     line-height: 1;
-    letter-spacing: 4px;
     transition: color 0.3s;
   }
 
-  .top .timer-display { color: #fff; }
-  .bottom .timer-display { color: #1A0A00; }
-
-  .timer-display.danger {
-    color: var(--danger) !important;
-    animation: pulse 0.5s ease-in-out infinite;
+  .t-main {
+    font-size: clamp(68px, 19vw, 116px);
+    letter-spacing: 2px;
   }
 
-  @keyframes pulse {
+  .t-dot {
+    font-size: clamp(44px, 12vw, 76px);
+    opacity: 0.55;
+    margin: 0 1px 0 2px;
+    letter-spacing: 0;
+  }
+
+  .t-tenth {
+    font-size: clamp(44px, 12vw, 76px);
+    letter-spacing: 0;
+    min-width: 0.6em;
+    text-align: left;
+  }
+
+  .top .timer-wrap { color: #FFFFFF; }
+  .bottom .timer-wrap { color: #1A0A00; }
+
+  .timer-wrap.danger { animation: timerPulse 0.35s ease-in-out infinite; }
+  .timer-wrap.danger .t-main,
+  .timer-wrap.danger .t-dot,
+  .timer-wrap.danger .t-tenth { color: var(--danger) !important; }
+
+  @keyframes timerPulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    50% { opacity: 0.45; }
   }
 
   .tap-hint {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -330,70 +298,60 @@
   .bottom .tap-hint { color: #888; }
   .active .tap-hint { opacity: 1; }
 
-  /* Divider bar */
+  /* Divider */
   .divider {
-    height: 64px;
-    background: #111;
+    height: 60px;
+    background: #0A0A0A;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 24px;
+    gap: 14px;
     flex-shrink: 0;
     z-index: 10;
+    border-top: 1px solid #1A1A1A;
+    border-bottom: 1px solid #1A1A1A;
   }
 
   .control-btn {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 17px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.15s;
   }
 
-  .btn-back {
-    background: #333;
-    color: #ccc;
-  }
+  .btn-back { background: #252525; color: #888; }
+  .btn-back:hover { background: #333; color: #fff; }
 
-  .btn-back:hover { background: #555; color: #fff; }
-
-  .btn-pause {
-    background: #333;
-    color: #ccc;
-  }
-
-  .btn-pause:hover { background: #444; }
-  .btn-pause.paused { background: var(--green); color: #fff; }
-
-  .btn-reset {
-    background: #333;
-    color: #ccc;
-  }
-
+  .btn-reset { background: #252525; color: #888; }
   .btn-reset:hover { background: #C0392B; color: #fff; }
+
+  .btn-pause { background: #252525; color: #888; }
+  .btn-pause:hover { background: #333; color: #fff; }
+  .btn-pause.paused { background: var(--green); color: #fff; }
 
   .turn-indicator {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     letter-spacing: 3px;
-    color: #555;
-    min-width: 80px;
+    color: #444;
+    min-width: 64px;
     text-align: center;
   }
 
   .turn-indicator.running { color: var(--accent); }
 
-  /* Game over overlay */
+  /* Game over */
   #gameover {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.92);
+    background: rgba(0,0,0,0.93);
     z-index: 100;
     flex-direction: column;
     align-items: center;
@@ -416,39 +374,34 @@
     font-size: 18px;
     color: #999;
     text-align: center;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   .gameover-sub strong { color: #fff; }
-
-  .gameover-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-  }
+  .gameover-actions { display: flex; gap: 12px; margin-top: 8px; }
 
   .btn-secondary {
-    padding: 14px 28px;
-    background: #333;
+    padding: 14px 24px;
+    background: #2A2A2A;
     color: #ccc;
     border: none;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     transition: all 0.15s;
   }
 
-  .btn-secondary:hover { background: #444; }
+  .btn-secondary:hover { background: #3A3A3A; }
 
   .btn-primary {
-    padding: 14px 28px;
+    padding: 14px 24px;
     background: var(--accent);
     color: #111;
     border: none;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
@@ -457,21 +410,18 @@
 
   .btn-primary:hover { background: var(--accent-light); }
 
-  /* Active flash effect */
   @keyframes activateFlash {
     0% { opacity: 1; }
-    50% { opacity: 0.7; }
+    40% { opacity: 0.6; }
     100% { opacity: 1; }
   }
 
-  .player-panel.just-switched {
-    animation: activateFlash 0.15s ease-out;
-  }
+  .player-panel.just-switched { animation: activateFlash 0.18s ease-out; }
 </style>
 </head>
 <body>
 
-<!-- SETUP SCREEN -->
+<!-- SETUP -->
 <div id="setup">
   <div class="chess-icon">♟</div>
   <div class="setup-title"><span>Chess</span> Timer</div>
@@ -497,14 +447,14 @@
   <div class="time-section">
     <div class="time-label">Waktu per Pemain</div>
     <div class="time-options">
-      <div class="time-opt" onclick="setTime(1)">1 min</div>
-      <div class="time-opt active" onclick="setTime(5)">5 min</div>
-      <div class="time-opt" onclick="setTime(10)">10 min</div>
-      <div class="time-opt" onclick="setTime(15)">15 min</div>
-      <div class="time-opt" onclick="setTime(20)">20 min</div>
-      <div class="time-opt" onclick="setTime(30)">30 min</div>
-      <div class="time-opt" onclick="setTime(45)">45 min</div>
-      <div class="time-opt" onclick="setTime(60)">60 min</div>
+      <div class="time-opt" onclick="setTime(1,this)">1 min</div>
+      <div class="time-opt active" onclick="setTime(5,this)">5 min</div>
+      <div class="time-opt" onclick="setTime(10,this)">10 min</div>
+      <div class="time-opt" onclick="setTime(15,this)">15 min</div>
+      <div class="time-opt" onclick="setTime(20,this)">20 min</div>
+      <div class="time-opt" onclick="setTime(30,this)">30 min</div>
+      <div class="time-opt" onclick="setTime(45,this)">45 min</div>
+      <div class="time-opt" onclick="setTime(60,this)">60 min</div>
     </div>
     <div class="custom-time">
       <input type="number" id="customTime" min="1" max="180" placeholder="Custom" oninput="setCustomTime(this.value)">
@@ -515,44 +465,45 @@
   <button class="start-btn" onclick="startGame()">MULAI PERMAINAN</button>
 </div>
 
-<!-- GAME SCREEN -->
+<!-- GAME -->
 <div id="game">
-  <!-- Player 2 (top, flipped) -->
   <div class="player-panel top inactive" id="panel2" onclick="switchTurn(2)">
     <div class="panel-content">
-      <div class="tap-hint" id="hint2">KETUK UNTUK PINDAH GILIRAN</div>
-      <div class="timer-display" id="timer2">05:00</div>
+      <div class="tap-hint">KETUK UNTUK PINDAH GILIRAN</div>
+      <div class="timer-wrap" id="tw2">
+        <span class="t-main" id="tm2">05:00</span><span class="t-dot">.</span><span class="t-tenth" id="tt2">0</span>
+      </div>
       <div class="piece-display" id="piece2">♚</div>
       <div class="player-name-display" id="name2">Pemain 2</div>
-      <div class="player-label" id="label2">GILIRAN ANDA</div>
+      <div class="player-label">GILIRAN ANDA</div>
     </div>
   </div>
 
-  <!-- Controls -->
   <div class="divider">
-    <button class="control-btn btn-back" onclick="backToSetup()" title="Kembali ke Menu">⚙</button>
+    <button class="control-btn btn-back" onclick="backToSetup()" title="Menu">⚙</button>
     <button class="control-btn btn-reset" onclick="resetGame()" title="Reset">↺</button>
     <div class="turn-indicator" id="turnInd">SIAP</div>
     <button class="control-btn btn-pause" id="pauseBtn" onclick="togglePause()" title="Pause">⏸</button>
   </div>
 
-  <!-- Player 1 (bottom) -->
   <div class="player-panel bottom active" id="panel1" onclick="switchTurn(1)">
     <div class="panel-content">
-      <div class="player-label" id="label1">GILIRAN ANDA</div>
+      <div class="player-label">GILIRAN ANDA</div>
       <div class="player-name-display" id="name1">Pemain 1</div>
       <div class="piece-display" id="piece1">♔</div>
-      <div class="timer-display" id="timer1">05:00</div>
-      <div class="tap-hint" id="hint1">KETUK UNTUK PINDAH GILIRAN</div>
+      <div class="timer-wrap" id="tw1">
+        <span class="t-main" id="tm1">05:00</span><span class="t-dot">.</span><span class="t-tenth" id="tt1">0</span>
+      </div>
+      <div class="tap-hint">KETUK UNTUK PINDAH GILIRAN</div>
     </div>
   </div>
 </div>
 
 <!-- GAME OVER -->
 <div id="gameover">
-  <div class="gameover-icon" id="goIcon">⏱</div>
-  <div class="gameover-title" id="goTitle">WAKTU HABIS</div>
-  <div class="gameover-sub" id="goSub">Waktu habis!</div>
+  <div class="gameover-icon">⏱</div>
+  <div class="gameover-title" id="goTitle">WAKTU HABIS!</div>
+  <div class="gameover-sub" id="goSub"></div>
   <div class="gameover-actions">
     <button class="btn-secondary" onclick="backToSetup()">Ubah Pengaturan</button>
     <button class="btn-primary" onclick="restartSame()">Main Lagi</button>
@@ -561,90 +512,79 @@
 
 <script>
   let selectedTime = 5;
-  let p1Color = 'white';
-  let p2Color = 'black';
-  let p1TimeLeft, p2TimeLeft;
-  let currentTurn = 1; // who is ACTIVE (their timer runs)
-  let gameRunning = false;
-  let paused = false;
-  let interval = null;
-  let gameStarted = false;
+  let p1Color = 'white', p2Color = 'black';
 
-  const WHITE_KING = '♔';
-  const BLACK_KING = '♚';
-  const WHITE_PIECE = '♙';
-  const BLACK_PIECE = '♟';
+  // Time stored in tenths of a second
+  let p1Time, p2Time;
+  let currentTurn = 1;
+  let gameStarted = false, gameRunning = false, paused = false;
+  let rafId = null, lastTs = null, acc = 0;
 
   function selectPiece(player, color) {
-    if (player === 1) {
-      p1Color = color;
-      p2Color = color === 'white' ? 'black' : 'white';
-    } else {
-      p2Color = color;
-      p1Color = color === 'white' ? 'black' : 'white';
-    }
-    updatePieceButtons();
+    if (player === 1) { p1Color = color; p2Color = color === 'white' ? 'black' : 'white'; }
+    else { p2Color = color; p1Color = color === 'white' ? 'black' : 'white'; }
+    updatePieceBtns();
   }
 
-  function updatePieceButtons() {
+  function updatePieceBtns() {
     document.getElementById('p1white').className = 'piece-btn' + (p1Color === 'white' ? ' selected-white' : '');
     document.getElementById('p1black').className = 'piece-btn' + (p1Color === 'black' ? ' selected-black' : '');
     document.getElementById('p2white').className = 'piece-btn' + (p2Color === 'white' ? ' selected-white' : '');
     document.getElementById('p2black').className = 'piece-btn' + (p2Color === 'black' ? ' selected-black' : '');
   }
 
-  function setTime(min) {
+  function setTime(min, el) {
     selectedTime = min;
-    document.querySelectorAll('.time-opt').forEach(el => el.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.time-opt').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
     document.getElementById('customTime').value = '';
   }
 
   function setCustomTime(val) {
-    if (val && val > 0) {
+    if (val && +val > 0) {
       selectedTime = parseInt(val);
-      document.querySelectorAll('.time-opt').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.time-opt').forEach(e => e.classList.remove('active'));
     }
   }
 
-  function formatTime(sec) {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  function renderTimer(p, tenths) {
+    const tot = Math.max(0, tenths);
+    const totalSec = Math.floor(tot / 10);
+    const tenth = tot % 10;
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    const main = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+
+    document.getElementById('tm' + p).textContent = main;
+    document.getElementById('tt' + p).textContent = tenth;
+
+    const tw = document.getElementById('tw' + p);
+    if (tot <= 100) tw.classList.add('danger');
+    else tw.classList.remove('danger');
   }
 
   function startGame() {
     const n1 = document.getElementById('p1name').value.trim() || 'Pemain 1';
     const n2 = document.getElementById('p2name').value.trim() || 'Pemain 2';
 
-    p1TimeLeft = selectedTime * 60;
-    p2TimeLeft = selectedTime * 60;
+    p1Time = selectedTime * 600;
+    p2Time = selectedTime * 600;
 
     document.getElementById('name1').textContent = n1;
     document.getElementById('name2').textContent = n2;
-    document.getElementById('piece1').textContent = p1Color === 'white' ? WHITE_KING : BLACK_KING;
-    document.getElementById('piece2').textContent = p2Color === 'white' ? WHITE_KING : BLACK_KING;
+    document.getElementById('piece1').textContent = p1Color === 'white' ? '♔' : '♚';
+    document.getElementById('piece2').textContent = p2Color === 'white' ? '♔' : '♚';
 
-    document.getElementById('timer1').textContent = formatTime(p1TimeLeft);
-    document.getElementById('timer2').textContent = formatTime(p2TimeLeft);
+    renderTimer(1, p1Time);
+    renderTimer(2, p2Time);
 
-    document.getElementById('timer1').classList.remove('danger');
-    document.getElementById('timer2').classList.remove('danger');
+    currentTurn = p1Color === 'white' ? 1 : 2;
+    gameStarted = false; gameRunning = false; paused = false;
+    lastTs = null; acc = 0;
 
-    // White goes first
-    if (p1Color === 'white') {
-      currentTurn = 1;
-    } else {
-      currentTurn = 2;
-    }
-
-    gameStarted = false;
-    gameRunning = false;
-    paused = false;
-
-    updatePanelStates();
-    updateTurnIndicator('SIAP');
-    document.getElementById('pauseBtn').classList.remove('paused');
+    setPanels();
+    setIndicator('SIAP');
+    document.getElementById('pauseBtn').className = 'control-btn btn-pause';
     document.getElementById('pauseBtn').textContent = '⏸';
 
     document.getElementById('setup').style.display = 'none';
@@ -652,78 +592,61 @@
     document.getElementById('gameover').style.display = 'none';
   }
 
-  function updatePanelStates() {
+  function setPanels() {
     const p1 = document.getElementById('panel1');
     const p2 = document.getElementById('panel2');
-
-    p1.className = 'player-panel bottom';
-    p2.className = 'player-panel top';
-
-    if (!gameStarted) {
-      p1.classList.add(currentTurn === 1 ? 'active' : 'inactive');
-      p2.classList.add(currentTurn === 2 ? 'active' : 'inactive');
-      return;
-    }
-
-    if (currentTurn === 1) {
-      p1.classList.add('active');
-      p2.classList.add('inactive');
-    } else {
-      p2.classList.add('active');
-      p1.classList.add('inactive');
-    }
+    p1.className = 'player-panel bottom ' + (currentTurn === 1 ? 'active' : 'inactive');
+    p2.className = 'player-panel top '    + (currentTurn === 2 ? 'active' : 'inactive');
   }
 
-  function updateTurnIndicator(text) {
+  function setIndicator(text) {
     const el = document.getElementById('turnInd');
     el.textContent = text;
     el.className = 'turn-indicator' + (gameRunning && !paused ? ' running' : '');
   }
 
   function switchTurn(fromPlayer) {
-    // Only active player can switch
-    if (gameRunning && fromPlayer !== currentTurn) return;
     if (paused) return;
+    if (gameRunning && fromPlayer !== currentTurn) return;
 
     if (!gameStarted) {
-      // First tap starts the game
-      gameStarted = true;
-      gameRunning = true;
-      startTimer();
-      updatePanelStates();
-      const n = fromPlayer === 1 ? document.getElementById('name1').textContent : document.getElementById('name2').textContent;
-      updateTurnIndicator('JALAN');
+      gameStarted = true; gameRunning = true;
+      lastTs = null; acc = 0;
+      rafId = requestAnimationFrame(tick);
+      setPanels();
+      setIndicator('JALAN');
       return;
     }
 
-    // Switch turn
     currentTurn = currentTurn === 1 ? 2 : 1;
-
-    const nextPanel = document.getElementById('panel' + currentTurn);
-    nextPanel.classList.add('just-switched');
-    setTimeout(() => nextPanel.classList.remove('just-switched'), 200);
-
-    updatePanelStates();
-    updateTurnIndicator('JALAN');
+    const np = document.getElementById('panel' + currentTurn);
+    np.classList.add('just-switched');
+    setTimeout(() => np.classList.remove('just-switched'), 200);
+    setPanels();
+    setIndicator('JALAN');
   }
 
-  function startTimer() {
-    clearInterval(interval);
-    interval = setInterval(() => {
-      if (!gameRunning || paused) return;
+  function tick(ts) {
+    if (!gameRunning || paused) { lastTs = null; return; }
 
-      if (currentTurn === 1) {
-        p1TimeLeft--;
-        document.getElementById('timer1').textContent = formatTime(p1TimeLeft);
-        if (p1TimeLeft <= 10) document.getElementById('timer1').classList.add('danger');
-        if (p1TimeLeft <= 0) endGame(1);
-      } else {
-        p2TimeLeft--;
-        document.getElementById('timer2').textContent = formatTime(p2TimeLeft);
-        if (p2TimeLeft <= 10) document.getElementById('timer2').classList.add('danger');
-        if (p2TimeLeft <= 0) endGame(2);
+    if (lastTs !== null) {
+      acc += ts - lastTs;
+      while (acc >= 100) {
+        acc -= 100;
+        if (currentTurn === 1) {
+          p1Time--;
+          renderTimer(1, p1Time);
+          if (p1Time <= 0) { endGame(1); return; }
+        } else {
+          p2Time--;
+          renderTimer(2, p2Time);
+          if (p2Time <= 0) { endGame(2); return; }
+        }
       }
-    }, 1000);
+    }
+
+    lastTs = ts;
+    rafId = requestAnimationFrame(tick);
   }
 
   function togglePause() {
@@ -731,53 +654,45 @@
     paused = !paused;
     const btn = document.getElementById('pauseBtn');
     if (paused) {
-      btn.classList.add('paused');
+      btn.className = 'control-btn btn-pause paused';
       btn.textContent = '▶';
-      updateTurnIndicator('PAUSE');
+      setIndicator('PAUSE');
+      lastTs = null; acc = 0;
     } else {
-      btn.classList.remove('paused');
+      btn.className = 'control-btn btn-pause';
       btn.textContent = '⏸';
-      updateTurnIndicator('JALAN');
+      setIndicator('JALAN');
+      lastTs = null; acc = 0;
+      rafId = requestAnimationFrame(tick);
     }
   }
 
   function endGame(loser) {
     gameRunning = false;
-    clearInterval(interval);
-
-    const loserName = document.getElementById('name' + loser).textContent;
-    const winnerNum = loser === 1 ? 2 : 1;
-    const winnerName = document.getElementById('name' + winnerNum).textContent;
-
-    document.getElementById('goIcon').textContent = '⏱';
+    cancelAnimationFrame(rafId);
+    const ln = document.getElementById('name' + loser).textContent;
+    const wn = document.getElementById('name' + (loser === 1 ? 2 : 1)).textContent;
     document.getElementById('goTitle').textContent = 'WAKTU HABIS!';
-    document.getElementById('goSub').innerHTML = `Waktu <strong>${loserName}</strong> habis.<br><strong>${winnerName}</strong> menang! 🏆`;
+    document.getElementById('goSub').innerHTML = `Waktu <strong>${ln}</strong> habis.<br><strong>${wn}</strong> menang! 🏆`;
     document.getElementById('gameover').style.display = 'flex';
   }
 
   function resetGame() {
-    clearInterval(interval);
-    gameRunning = false;
-    gameStarted = false;
-    paused = false;
+    cancelAnimationFrame(rafId);
+    gameRunning = false; gameStarted = false; paused = false;
+    lastTs = null; acc = 0;
 
-    p1TimeLeft = selectedTime * 60;
-    p2TimeLeft = selectedTime * 60;
+    p1Time = selectedTime * 600;
+    p2Time = selectedTime * 600;
+    currentTurn = p1Color === 'white' ? 1 : 2;
 
-    if (p1Color === 'white') currentTurn = 1;
-    else currentTurn = 2;
-
-    document.getElementById('timer1').textContent = formatTime(p1TimeLeft);
-    document.getElementById('timer2').textContent = formatTime(p2TimeLeft);
-    document.getElementById('timer1').classList.remove('danger');
-    document.getElementById('timer2').classList.remove('danger');
-
-    document.getElementById('pauseBtn').classList.remove('paused');
+    renderTimer(1, p1Time);
+    renderTimer(2, p2Time);
+    document.getElementById('pauseBtn').className = 'control-btn btn-pause';
     document.getElementById('pauseBtn').textContent = '⏸';
     document.getElementById('gameover').style.display = 'none';
-
-    updatePanelStates();
-    updateTurnIndicator('SIAP');
+    setPanels();
+    setIndicator('SIAP');
   }
 
   function restartSame() {
@@ -786,17 +701,14 @@
   }
 
   function backToSetup() {
-    clearInterval(interval);
-    gameRunning = false;
-    gameStarted = false;
-    paused = false;
+    cancelAnimationFrame(rafId);
+    gameRunning = false; gameStarted = false; paused = false; acc = 0;
     document.getElementById('gameover').style.display = 'none';
     document.getElementById('game').style.display = 'none';
     document.getElementById('setup').style.display = 'flex';
   }
 
-  // Keyboard support: spacebar to switch turn
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', e => {
     if (e.code === 'Space') {
       e.preventDefault();
       if (document.getElementById('game').style.display === 'flex') {
