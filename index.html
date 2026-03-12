@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Timer Modern</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timer-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .active-p1 {
+            background-color: #ef4444; /* Red for active */
+            transform: scale(0.98);
+        }
+
+        .active-p2 {
+            background-color: #3b82f6; /* Blue for active */
+            transform: scale(0.98);
+        }
+
+        .inactive {
+            background-color: #1e293b;
+            opacity: 0.6;
+        }
+
+        .btn-chess {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay Pengaturan -->
+    <div id="setup-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 px-4">
+        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
+            <h1 class="text-3xl font-bold mb-6 text-center text-white">Pengaturan Catur</h1>
+            
+            <div class="space-y-4">
+                <!-- Pemain 1 -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Pemain 1</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="p1-name" value="Pemain 1" class="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select id="p1-color" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white" onchange="syncColors(1)">
+                            <option value="white">Putih</option>
+                            <option value="black">Hitam</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pemain 2 -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Pemain 2</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="p2-name" value="Pemain 2" class="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select id="p2-color" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white" disabled>
+                            <option value="black">Hitam</option>
+                            <option value="white">Putih</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Waktu -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Waktu (Menit)</label>
+                    <input type="number" id="base-time" value="10" min="1" max="180" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <button onclick="startGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl mt-4 shadow-lg transition-colors">
+                    MULAI PERMAINAN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Area Game -->
+    <div id="game-screen" class="hidden flex-1 flex flex-col h-screen">
+        
+        <!-- Pemain 2 (Atas, terbalik) -->
+        <button id="btn-p2" onclick="switchTurn(2)" class="btn-chess flex-1 flex flex-col items-center justify-center rotate-180 inactive relative">
+            <div class="absolute top-4 left-4 text-xs font-bold uppercase tracking-widest opacity-50" id="label-p2-color">HITAM</div>
+            <div class="text-xl font-semibold mb-2" id="display-p2-name">Pemain 2</div>
+            <div class="timer-font text-7xl md:text-9xl font-bold" id="timer-p2">10:00</div>
+        </button>
+
+        <!-- Bar Tengah (Kontrol) -->
+        <div class="h-20 bg-slate-900 border-y border-slate-700 flex items-center justify-around px-4">
+            <button onclick="pauseGame()" id="btn-pause" class="p-3 bg-slate-800 rounded-full hover:bg-slate-700">
+                <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </button>
+            
+            <button onclick="resetGame()" class="p-3 bg-slate-800 rounded-full hover:bg-slate-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </button>
+
+            <button onclick="showSettings()" class="p-3 bg-slate-800 rounded-full hover:bg-slate-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Pemain 1 (Bawah) -->
+        <button id="btn-p1" onclick="switchTurn(1)" class="btn-chess flex-1 flex flex-col items-center justify-center inactive relative">
+            <div class="absolute bottom-4 right-4 text-xs font-bold uppercase tracking-widest opacity-50" id="label-p1-color">PUTIH</div>
+            <div class="text-xl font-semibold mb-2" id="display-p1-name">Pemain 1</div>
+            <div class="timer-font text-7xl md:text-9xl font-bold" id="timer-p1">10:00</div>
+        </button>
+    </div>
+
+    <!-- Modal Game Over -->
+    <div id="game-over-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-slate-800 border border-slate-700 p-8 rounded-2xl text-center max-w-sm w-full">
+            <div class="text-yellow-500 mb-4 flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold mb-2">Waktu Habis!</h2>
+            <p id="winner-text" class="text-slate-300 mb-6 text-lg">Pemain X Menang</p>
+            <button onclick="closeGameOver()" class="w-full bg-blue-600 py-3 rounded-xl font-bold hover:bg-blue-500 transition-colors">OKE</button>
+        </div>
+    </div>
+
+    <script>
+        let p1Name, p2Name, p1Color, p2Color;
+        let p1Time, p2Time;
+        let initialTime;
+        let activePlayer = null; // 1 or 2
+        let timerInterval = null;
+        let isPaused = false;
+        let gameStarted = false;
+
+        function syncColors(source) {
+            const p1ColorSelect = document.getElementById('p1-color');
+            const p2ColorSelect = document.getElementById('p2-color');
+            
+            if (source === 1) {
+                p2ColorSelect.value = p1ColorSelect.value === 'white' ? 'black' : 'white';
+            }
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function updateDisplays() {
+            document.getElementById('timer-p1').innerText = formatTime(p1Time);
+            document.getElementById('timer-p2').innerText = formatTime(p2Time);
+            
+            // Visual feedback for turn
+            const btn1 = document.getElementById('btn-p1');
+            const btn2 = document.getElementById('btn-p2');
+
+            if (!gameStarted) {
+                btn1.classList.add('inactive');
+                btn2.classList.add('inactive');
+                btn1.classList.remove('active-p1');
+                btn2.classList.remove('active-p2');
+            } else if (activePlayer === 1) {
+                btn1.classList.add('active-p1');
+                btn1.classList.remove('inactive');
+                btn2.classList.add('inactive');
+                btn2.classList.remove('active-p2');
+            } else if (activePlayer === 2) {
+                btn2.classList.add('active-p2');
+                btn2.classList.remove('inactive');
+                btn1.classList.add('inactive');
+                btn1.classList.remove('active-p1');
+            }
+        }
+
+        function startGame() {
+            p1Name = document.getElementById('p1-name').value || "Pemain 1";
+            p2Name = document.getElementById('p2-name').value || "Pemain 2";
+            p1Color = document.getElementById('p1-color').value;
+            p2Color = document.getElementById('p2-color').value;
+            initialTime = parseInt(document.getElementById('base-time').value) * 60;
+
+            p1Time = initialTime;
+            p2Time = initialTime;
+
+            document.getElementById('display-p1-name').innerText = p1Name;
+            document.getElementById('display-p2-name').innerText = p2Name;
+            document.getElementById('label-p1-color').innerText = p1Color === 'white' ? 'PUTIH' : 'HITAM';
+            document.getElementById('label-p2-color').innerText = p2Color === 'white' ? 'PUTIH' : 'HITAM';
+
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            // In chess, White starts first
+            activePlayer = p1Color === 'white' ? 1 : 2;
+            gameStarted = true;
+            isPaused = false;
+            
+            updateDisplays();
+            startTimer();
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+
+                if (activePlayer === 1) {
+                    p1Time--;
+                    if (p1Time <= 0) gameOver(p2Name);
+                } else {
+                    p2Time--;
+                    if (p2Time <= 0) gameOver(p1Name);
+                }
+                updateDisplays();
+            }, 1000);
+        }
+
+        function switchTurn(fromPlayer) {
+            if (!gameStarted || isPaused) return;
+            if (activePlayer !== fromPlayer) return;
+
+            activePlayer = activePlayer === 1 ? 2 : 1;
+            updateDisplays();
+        }
+
+        function pauseGame() {
+            if (!gameStarted) return;
+            isPaused = !isPaused;
+            
+            const icon = document.getElementById('icon-pause');
+            if (isPaused) {
+                // Change to Play Icon
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`;
+            } else {
+                // Change back to Pause Icon
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />`;
+            }
+        }
+
+        function resetGame() {
+            if (!confirm("Apakah Anda yakin ingin mereset waktu?")) return;
+            p1Time = initialTime;
+            p2Time = initialTime;
+            isPaused = false;
+            // White starts again
+            activePlayer = p1Color === 'white' ? 1 : 2;
+            updateDisplays();
+        }
+
+        function showSettings() {
+            if (!confirm("Keluar ke pengaturan? Permainan saat ini akan hilang.")) return;
+            clearInterval(timerInterval);
+            gameStarted = false;
+            document.getElementById('setup-screen').classList.remove('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+        }
+
+        function gameOver(winner) {
+            clearInterval(timerInterval);
+            gameStarted = false;
+            document.getElementById('winner-text').innerText = `${winner} Menang (Waktu Habis)`;
+            document.getElementById('game-over-modal').classList.remove('hidden');
+            document.getElementById('game-over-modal').classList.add('flex');
+        }
+
+        function closeGameOver() {
+            document.getElementById('game-over-modal').classList.add('hidden');
+            document.getElementById('game-over-modal').classList.remove('flex');
+            showSettings();
+        }
+    </script>
+</body>
+</html>
