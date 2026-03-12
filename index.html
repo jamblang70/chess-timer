@@ -1,298 +1,811 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Timer Modern</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Timer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white-bg: #F5F0E8;
+    --white-dark: #D4C9A8;
+    --black-bg: #1A1A1A;
+    --black-mid: #2D2D2D;
+    --black-text: #E8E0CC;
+    --accent: #C8993C;
+    --accent-light: #E8B84B;
+    --danger: #C0392B;
+    --green: #27AE60;
+  }
 
-        .timer-font {
-            font-family: 'Orbitron', sans-serif;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .active-p1 {
-            background-color: #ef4444; /* Red for active */
-            transform: scale(0.98);
-        }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #111;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
 
-        .active-p2 {
-            background-color: #3b82f6; /* Blue for active */
-            transform: scale(0.98);
-        }
+  /* SETUP SCREEN */
+  #setup {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 
-        .inactive {
-            background-color: #1e293b;
-            opacity: 0.6;
-        }
+  .setup-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--accent);
+    text-align: center;
+    letter-spacing: 4px;
+    line-height: 1;
+  }
 
-        .btn-chess {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            -webkit-tap-highlight-color: transparent;
-        }
+  .setup-title span { color: #fff; }
 
-        .rotate-180 {
-            transform: rotate(180deg);
-        }
-    </style>
+  .chess-icon {
+    text-align: center;
+    font-size: 48px;
+    margin-bottom: -8px;
+  }
+
+  .player-setup {
+    background: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .player-setup-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #666;
+  }
+
+  .player-name-input {
+    background: #2A2A2A;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .player-name-input:focus { border-color: var(--accent); }
+
+  .piece-selector {
+    display: flex;
+    gap: 8px;
+  }
+
+  .piece-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    background: transparent;
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: #999;
+  }
+
+  .piece-btn.selected-white {
+    border-color: #fff;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .piece-btn.selected-black {
+    border-color: var(--accent);
+    background: rgba(200,153,60,0.15);
+    color: var(--accent);
+  }
+
+  .time-section {
+    background: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .time-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 14px;
+  }
+
+  .time-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .time-opt {
+    padding: 10px 4px;
+    background: #2A2A2A;
+    border: 2px solid #333;
+    border-radius: 10px;
+    color: #999;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .time-opt:hover { border-color: #555; color: #ccc; }
+  .time-opt.active { border-color: var(--accent); color: var(--accent); background: rgba(200,153,60,0.1); }
+
+  .custom-time {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .custom-time input {
+    flex: 1;
+    background: #2A2A2A;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .custom-time input:focus { border-color: var(--accent); }
+  .custom-time label { color: #666; font-size: 13px; white-space: nowrap; }
+
+  .start-btn {
+    background: var(--accent);
+    color: #111;
+    border: none;
+    border-radius: 16px;
+    padding: 18px;
+    font-size: 20px;
+    font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+  }
+
+  .start-btn:hover { background: var(--accent-light); transform: translateY(-1px); }
+  .start-btn:active { transform: translateY(0); }
+
+  /* GAME SCREEN */
+  #game {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  .player-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    outline: none;
+  }
+
+  /* Player 2 (top) - flipped */
+  .player-panel.top {
+    background: var(--black-bg);
+    transform-origin: center;
+  }
+
+  .player-panel.top .panel-content {
+    transform: rotate(180deg);
+  }
+
+  /* Player 1 (bottom) */
+  .player-panel.bottom {
+    background: var(--white-bg);
+  }
+
+  /* Active state */
+  .player-panel.active.top {
+    background: #111;
+  }
+
+  .player-panel.active.bottom {
+    background: #F0E8D0;
+  }
+
+  /* Inactive (dimmed) */
+  .player-panel.inactive {
+    opacity: 0.5;
+    filter: grayscale(30%);
+  }
+
+  .panel-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    width: 100%;
+  }
+
+  .player-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .top .player-label { color: #666; }
+  .bottom .player-label { color: #999; }
+  .active.top .player-label { color: var(--accent); }
+  .active.bottom .player-label { color: #888; }
+
+  .player-name-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+  }
+
+  .top .player-name-display { color: var(--black-text); }
+  .bottom .player-name-display { color: #2A1A00; }
+
+  .piece-display {
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .timer-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 22vw, 140px);
+    line-height: 1;
+    letter-spacing: 4px;
+    transition: color 0.3s;
+  }
+
+  .top .timer-display { color: #fff; }
+  .bottom .timer-display { color: #1A0A00; }
+
+  .timer-display.danger {
+    color: var(--danger) !important;
+    animation: pulse 0.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  .tap-hint {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .top .tap-hint { color: var(--accent); }
+  .bottom .tap-hint { color: #888; }
+  .active .tap-hint { opacity: 1; }
+
+  /* Divider bar */
+  .divider {
+    height: 64px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .control-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .btn-back {
+    background: #333;
+    color: #ccc;
+  }
+
+  .btn-back:hover { background: #555; color: #fff; }
+
+  .btn-pause {
+    background: #333;
+    color: #ccc;
+  }
+
+  .btn-pause:hover { background: #444; }
+  .btn-pause.paused { background: var(--green); color: #fff; }
+
+  .btn-reset {
+    background: #333;
+    color: #ccc;
+  }
+
+  .btn-reset:hover { background: #C0392B; color: #fff; }
+
+  .turn-indicator {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: #555;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .turn-indicator.running { color: var(--accent); }
+
+  /* Game over overlay */
+  #gameover {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 32px;
+  }
+
+  .gameover-icon { font-size: 72px; }
+
+  .gameover-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 4px;
+    color: var(--danger);
+    text-align: center;
+  }
+
+  .gameover-sub {
+    font-size: 18px;
+    color: #999;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .gameover-sub strong { color: #fff; }
+
+  .gameover-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .btn-secondary {
+    padding: 14px 28px;
+    background: #333;
+    color: #ccc;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .btn-secondary:hover { background: #444; }
+
+  .btn-primary {
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #111;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--accent-light); }
+
+  /* Active flash effect */
+  @keyframes activateFlash {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+  .player-panel.just-switched {
+    animation: activateFlash 0.15s ease-out;
+  }
+</style>
 </head>
 <body>
 
-    <!-- Overlay Pengaturan -->
-    <div id="setup-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 px-4">
-        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
-            <h1 class="text-3xl font-bold mb-6 text-center text-white">Pengaturan Catur</h1>
-            
-            <div class="space-y-4">
-                <!-- Pemain 1 -->
-                <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1">Pemain 1</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="p1-name" value="Pemain 1" class="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <select id="p1-color" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white" onchange="syncColors(1)">
-                            <option value="white">Putih</option>
-                            <option value="black">Hitam</option>
-                        </select>
-                    </div>
-                </div>
+<!-- SETUP SCREEN -->
+<div id="setup">
+  <div class="chess-icon">♟</div>
+  <div class="setup-title"><span>Chess</span> Timer</div>
 
-                <!-- Pemain 2 -->
-                <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1">Pemain 2</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="p2-name" value="Pemain 2" class="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <select id="p2-color" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white" disabled>
-                            <option value="black">Hitam</option>
-                            <option value="white">Putih</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Waktu -->
-                <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1">Waktu (Menit)</label>
-                    <input type="number" id="base-time" value="10" min="1" max="180" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <button onclick="startGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl mt-4 shadow-lg transition-colors">
-                    MULAI PERMAINAN
-                </button>
-            </div>
-        </div>
+  <div class="player-setup">
+    <div class="player-setup-title">Pemain 1</div>
+    <input class="player-name-input" id="p1name" type="text" placeholder="Nama Pemain 1" maxlength="16" value="Pemain 1">
+    <div class="piece-selector">
+      <button class="piece-btn selected-white" id="p1white" onclick="selectPiece(1,'white')">♔ Putih</button>
+      <button class="piece-btn" id="p1black" onclick="selectPiece(1,'black')">♚ Hitam</button>
     </div>
+  </div>
 
-    <!-- Area Game -->
-    <div id="game-screen" class="hidden flex-1 flex flex-col h-screen">
-        
-        <!-- Pemain 2 (Atas, terbalik) -->
-        <button id="btn-p2" onclick="switchTurn(2)" class="btn-chess flex-1 flex flex-col items-center justify-center rotate-180 inactive relative">
-            <div class="absolute top-4 left-4 text-xs font-bold uppercase tracking-widest opacity-50" id="label-p2-color">HITAM</div>
-            <div class="text-xl font-semibold mb-2" id="display-p2-name">Pemain 2</div>
-            <div class="timer-font text-7xl md:text-9xl font-bold" id="timer-p2">10:00</div>
-        </button>
-
-        <!-- Bar Tengah (Kontrol) -->
-        <div class="h-20 bg-slate-900 border-y border-slate-700 flex items-center justify-around px-4">
-            <button onclick="pauseGame()" id="btn-pause" class="p-3 bg-slate-800 rounded-full hover:bg-slate-700">
-                <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </button>
-            
-            <button onclick="resetGame()" class="p-3 bg-slate-800 rounded-full hover:bg-slate-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-            </button>
-
-            <button onclick="showSettings()" class="p-3 bg-slate-800 rounded-full hover:bg-slate-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            </button>
-        </div>
-
-        <!-- Pemain 1 (Bawah) -->
-        <button id="btn-p1" onclick="switchTurn(1)" class="btn-chess flex-1 flex flex-col items-center justify-center inactive relative">
-            <div class="absolute bottom-4 right-4 text-xs font-bold uppercase tracking-widest opacity-50" id="label-p1-color">PUTIH</div>
-            <div class="text-xl font-semibold mb-2" id="display-p1-name">Pemain 1</div>
-            <div class="timer-font text-7xl md:text-9xl font-bold" id="timer-p1">10:00</div>
-        </button>
+  <div class="player-setup">
+    <div class="player-setup-title">Pemain 2</div>
+    <input class="player-name-input" id="p2name" type="text" placeholder="Nama Pemain 2" maxlength="16" value="Pemain 2">
+    <div class="piece-selector">
+      <button class="piece-btn" id="p2white" onclick="selectPiece(2,'white')">♔ Putih</button>
+      <button class="piece-btn selected-black" id="p2black" onclick="selectPiece(2,'black')">♚ Hitam</button>
     </div>
+  </div>
 
-    <!-- Modal Game Over -->
-    <div id="game-over-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-        <div class="bg-slate-800 border border-slate-700 p-8 rounded-2xl text-center max-w-sm w-full">
-            <div class="text-yellow-500 mb-4 flex justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <h2 class="text-3xl font-bold mb-2">Waktu Habis!</h2>
-            <p id="winner-text" class="text-slate-300 mb-6 text-lg">Pemain X Menang</p>
-            <button onclick="closeGameOver()" class="w-full bg-blue-600 py-3 rounded-xl font-bold hover:bg-blue-500 transition-colors">OKE</button>
-        </div>
+  <div class="time-section">
+    <div class="time-label">Waktu per Pemain</div>
+    <div class="time-options">
+      <div class="time-opt" onclick="setTime(1)">1 min</div>
+      <div class="time-opt active" onclick="setTime(5)">5 min</div>
+      <div class="time-opt" onclick="setTime(10)">10 min</div>
+      <div class="time-opt" onclick="setTime(15)">15 min</div>
+      <div class="time-opt" onclick="setTime(20)">20 min</div>
+      <div class="time-opt" onclick="setTime(30)">30 min</div>
+      <div class="time-opt" onclick="setTime(45)">45 min</div>
+      <div class="time-opt" onclick="setTime(60)">60 min</div>
     </div>
+    <div class="custom-time">
+      <input type="number" id="customTime" min="1" max="180" placeholder="Custom" oninput="setCustomTime(this.value)">
+      <label>menit (custom)</label>
+    </div>
+  </div>
 
-    <script>
-        let p1Name, p2Name, p1Color, p2Color;
-        let p1Time, p2Time;
-        let initialTime;
-        let activePlayer = null; // 1 or 2
-        let timerInterval = null;
-        let isPaused = false;
-        let gameStarted = false;
+  <button class="start-btn" onclick="startGame()">MULAI PERMAINAN</button>
+</div>
 
-        function syncColors(source) {
-            const p1ColorSelect = document.getElementById('p1-color');
-            const p2ColorSelect = document.getElementById('p2-color');
-            
-            if (source === 1) {
-                p2ColorSelect.value = p1ColorSelect.value === 'white' ? 'black' : 'white';
-            }
-        }
+<!-- GAME SCREEN -->
+<div id="game">
+  <!-- Player 2 (top, flipped) -->
+  <div class="player-panel top inactive" id="panel2" onclick="switchTurn(2)">
+    <div class="panel-content">
+      <div class="tap-hint" id="hint2">KETUK UNTUK PINDAH GILIRAN</div>
+      <div class="timer-display" id="timer2">05:00</div>
+      <div class="piece-display" id="piece2">♚</div>
+      <div class="player-name-display" id="name2">Pemain 2</div>
+      <div class="player-label" id="label2">GILIRAN ANDA</div>
+    </div>
+  </div>
 
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
+  <!-- Controls -->
+  <div class="divider">
+    <button class="control-btn btn-back" onclick="backToSetup()" title="Kembali ke Menu">⚙</button>
+    <button class="control-btn btn-reset" onclick="resetGame()" title="Reset">↺</button>
+    <div class="turn-indicator" id="turnInd">SIAP</div>
+    <button class="control-btn btn-pause" id="pauseBtn" onclick="togglePause()" title="Pause">⏸</button>
+  </div>
 
-        function updateDisplays() {
-            document.getElementById('timer-p1').innerText = formatTime(p1Time);
-            document.getElementById('timer-p2').innerText = formatTime(p2Time);
-            
-            // Visual feedback for turn
-            const btn1 = document.getElementById('btn-p1');
-            const btn2 = document.getElementById('btn-p2');
+  <!-- Player 1 (bottom) -->
+  <div class="player-panel bottom active" id="panel1" onclick="switchTurn(1)">
+    <div class="panel-content">
+      <div class="player-label" id="label1">GILIRAN ANDA</div>
+      <div class="player-name-display" id="name1">Pemain 1</div>
+      <div class="piece-display" id="piece1">♔</div>
+      <div class="timer-display" id="timer1">05:00</div>
+      <div class="tap-hint" id="hint1">KETUK UNTUK PINDAH GILIRAN</div>
+    </div>
+  </div>
+</div>
 
-            if (!gameStarted) {
-                btn1.classList.add('inactive');
-                btn2.classList.add('inactive');
-                btn1.classList.remove('active-p1');
-                btn2.classList.remove('active-p2');
-            } else if (activePlayer === 1) {
-                btn1.classList.add('active-p1');
-                btn1.classList.remove('inactive');
-                btn2.classList.add('inactive');
-                btn2.classList.remove('active-p2');
-            } else if (activePlayer === 2) {
-                btn2.classList.add('active-p2');
-                btn2.classList.remove('inactive');
-                btn1.classList.add('inactive');
-                btn1.classList.remove('active-p1');
-            }
-        }
+<!-- GAME OVER -->
+<div id="gameover">
+  <div class="gameover-icon" id="goIcon">⏱</div>
+  <div class="gameover-title" id="goTitle">WAKTU HABIS</div>
+  <div class="gameover-sub" id="goSub">Waktu habis!</div>
+  <div class="gameover-actions">
+    <button class="btn-secondary" onclick="backToSetup()">Ubah Pengaturan</button>
+    <button class="btn-primary" onclick="restartSame()">Main Lagi</button>
+  </div>
+</div>
 
-        function startGame() {
-            p1Name = document.getElementById('p1-name').value || "Pemain 1";
-            p2Name = document.getElementById('p2-name').value || "Pemain 2";
-            p1Color = document.getElementById('p1-color').value;
-            p2Color = document.getElementById('p2-color').value;
-            initialTime = parseInt(document.getElementById('base-time').value) * 60;
+<script>
+  let selectedTime = 5;
+  let p1Color = 'white';
+  let p2Color = 'black';
+  let p1TimeLeft, p2TimeLeft;
+  let currentTurn = 1; // who is ACTIVE (their timer runs)
+  let gameRunning = false;
+  let paused = false;
+  let interval = null;
+  let gameStarted = false;
 
-            p1Time = initialTime;
-            p2Time = initialTime;
+  const WHITE_KING = '♔';
+  const BLACK_KING = '♚';
+  const WHITE_PIECE = '♙';
+  const BLACK_PIECE = '♟';
 
-            document.getElementById('display-p1-name').innerText = p1Name;
-            document.getElementById('display-p2-name').innerText = p2Name;
-            document.getElementById('label-p1-color').innerText = p1Color === 'white' ? 'PUTIH' : 'HITAM';
-            document.getElementById('label-p2-color').innerText = p2Color === 'white' ? 'PUTIH' : 'HITAM';
+  function selectPiece(player, color) {
+    if (player === 1) {
+      p1Color = color;
+      p2Color = color === 'white' ? 'black' : 'white';
+    } else {
+      p2Color = color;
+      p1Color = color === 'white' ? 'black' : 'white';
+    }
+    updatePieceButtons();
+  }
 
-            document.getElementById('setup-screen').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
+  function updatePieceButtons() {
+    document.getElementById('p1white').className = 'piece-btn' + (p1Color === 'white' ? ' selected-white' : '');
+    document.getElementById('p1black').className = 'piece-btn' + (p1Color === 'black' ? ' selected-black' : '');
+    document.getElementById('p2white').className = 'piece-btn' + (p2Color === 'white' ? ' selected-white' : '');
+    document.getElementById('p2black').className = 'piece-btn' + (p2Color === 'black' ? ' selected-black' : '');
+  }
 
-            // In chess, White starts first
-            activePlayer = p1Color === 'white' ? 1 : 2;
-            gameStarted = true;
-            isPaused = false;
-            
-            updateDisplays();
-            startTimer();
-        }
+  function setTime(min) {
+    selectedTime = min;
+    document.querySelectorAll('.time-opt').forEach(el => el.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('customTime').value = '';
+  }
 
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            
-            timerInterval = setInterval(() => {
-                if (isPaused) return;
+  function setCustomTime(val) {
+    if (val && val > 0) {
+      selectedTime = parseInt(val);
+      document.querySelectorAll('.time-opt').forEach(el => el.classList.remove('active'));
+    }
+  }
 
-                if (activePlayer === 1) {
-                    p1Time--;
-                    if (p1Time <= 0) gameOver(p2Name);
-                } else {
-                    p2Time--;
-                    if (p2Time <= 0) gameOver(p1Name);
-                }
-                updateDisplays();
-            }, 1000);
-        }
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
 
-        function switchTurn(fromPlayer) {
-            if (!gameStarted || isPaused) return;
-            if (activePlayer !== fromPlayer) return;
+  function startGame() {
+    const n1 = document.getElementById('p1name').value.trim() || 'Pemain 1';
+    const n2 = document.getElementById('p2name').value.trim() || 'Pemain 2';
 
-            activePlayer = activePlayer === 1 ? 2 : 1;
-            updateDisplays();
-        }
+    p1TimeLeft = selectedTime * 60;
+    p2TimeLeft = selectedTime * 60;
 
-        function pauseGame() {
-            if (!gameStarted) return;
-            isPaused = !isPaused;
-            
-            const icon = document.getElementById('icon-pause');
-            if (isPaused) {
-                // Change to Play Icon
-                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`;
-            } else {
-                // Change back to Pause Icon
-                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />`;
-            }
-        }
+    document.getElementById('name1').textContent = n1;
+    document.getElementById('name2').textContent = n2;
+    document.getElementById('piece1').textContent = p1Color === 'white' ? WHITE_KING : BLACK_KING;
+    document.getElementById('piece2').textContent = p2Color === 'white' ? WHITE_KING : BLACK_KING;
 
-        function resetGame() {
-            if (!confirm("Apakah Anda yakin ingin mereset waktu?")) return;
-            p1Time = initialTime;
-            p2Time = initialTime;
-            isPaused = false;
-            // White starts again
-            activePlayer = p1Color === 'white' ? 1 : 2;
-            updateDisplays();
-        }
+    document.getElementById('timer1').textContent = formatTime(p1TimeLeft);
+    document.getElementById('timer2').textContent = formatTime(p2TimeLeft);
 
-        function showSettings() {
-            if (!confirm("Keluar ke pengaturan? Permainan saat ini akan hilang.")) return;
-            clearInterval(timerInterval);
-            gameStarted = false;
-            document.getElementById('setup-screen').classList.remove('hidden');
-            document.getElementById('game-screen').classList.add('hidden');
-        }
+    document.getElementById('timer1').classList.remove('danger');
+    document.getElementById('timer2').classList.remove('danger');
 
-        function gameOver(winner) {
-            clearInterval(timerInterval);
-            gameStarted = false;
-            document.getElementById('winner-text').innerText = `${winner} Menang (Waktu Habis)`;
-            document.getElementById('game-over-modal').classList.remove('hidden');
-            document.getElementById('game-over-modal').classList.add('flex');
-        }
+    // White goes first
+    if (p1Color === 'white') {
+      currentTurn = 1;
+    } else {
+      currentTurn = 2;
+    }
 
-        function closeGameOver() {
-            document.getElementById('game-over-modal').classList.add('hidden');
-            document.getElementById('game-over-modal').classList.remove('flex');
-            showSettings();
-        }
-    </script>
+    gameStarted = false;
+    gameRunning = false;
+    paused = false;
+
+    updatePanelStates();
+    updateTurnIndicator('SIAP');
+    document.getElementById('pauseBtn').classList.remove('paused');
+    document.getElementById('pauseBtn').textContent = '⏸';
+
+    document.getElementById('setup').style.display = 'none';
+    document.getElementById('game').style.display = 'flex';
+    document.getElementById('gameover').style.display = 'none';
+  }
+
+  function updatePanelStates() {
+    const p1 = document.getElementById('panel1');
+    const p2 = document.getElementById('panel2');
+
+    p1.className = 'player-panel bottom';
+    p2.className = 'player-panel top';
+
+    if (!gameStarted) {
+      p1.classList.add(currentTurn === 1 ? 'active' : 'inactive');
+      p2.classList.add(currentTurn === 2 ? 'active' : 'inactive');
+      return;
+    }
+
+    if (currentTurn === 1) {
+      p1.classList.add('active');
+      p2.classList.add('inactive');
+    } else {
+      p2.classList.add('active');
+      p1.classList.add('inactive');
+    }
+  }
+
+  function updateTurnIndicator(text) {
+    const el = document.getElementById('turnInd');
+    el.textContent = text;
+    el.className = 'turn-indicator' + (gameRunning && !paused ? ' running' : '');
+  }
+
+  function switchTurn(fromPlayer) {
+    // Only active player can switch
+    if (gameRunning && fromPlayer !== currentTurn) return;
+    if (paused) return;
+
+    if (!gameStarted) {
+      // First tap starts the game
+      gameStarted = true;
+      gameRunning = true;
+      startTimer();
+      updatePanelStates();
+      const n = fromPlayer === 1 ? document.getElementById('name1').textContent : document.getElementById('name2').textContent;
+      updateTurnIndicator('JALAN');
+      return;
+    }
+
+    // Switch turn
+    currentTurn = currentTurn === 1 ? 2 : 1;
+
+    const nextPanel = document.getElementById('panel' + currentTurn);
+    nextPanel.classList.add('just-switched');
+    setTimeout(() => nextPanel.classList.remove('just-switched'), 200);
+
+    updatePanelStates();
+    updateTurnIndicator('JALAN');
+  }
+
+  function startTimer() {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      if (!gameRunning || paused) return;
+
+      if (currentTurn === 1) {
+        p1TimeLeft--;
+        document.getElementById('timer1').textContent = formatTime(p1TimeLeft);
+        if (p1TimeLeft <= 10) document.getElementById('timer1').classList.add('danger');
+        if (p1TimeLeft <= 0) endGame(1);
+      } else {
+        p2TimeLeft--;
+        document.getElementById('timer2').textContent = formatTime(p2TimeLeft);
+        if (p2TimeLeft <= 10) document.getElementById('timer2').classList.add('danger');
+        if (p2TimeLeft <= 0) endGame(2);
+      }
+    }, 1000);
+  }
+
+  function togglePause() {
+    if (!gameStarted) return;
+    paused = !paused;
+    const btn = document.getElementById('pauseBtn');
+    if (paused) {
+      btn.classList.add('paused');
+      btn.textContent = '▶';
+      updateTurnIndicator('PAUSE');
+    } else {
+      btn.classList.remove('paused');
+      btn.textContent = '⏸';
+      updateTurnIndicator('JALAN');
+    }
+  }
+
+  function endGame(loser) {
+    gameRunning = false;
+    clearInterval(interval);
+
+    const loserName = document.getElementById('name' + loser).textContent;
+    const winnerNum = loser === 1 ? 2 : 1;
+    const winnerName = document.getElementById('name' + winnerNum).textContent;
+
+    document.getElementById('goIcon').textContent = '⏱';
+    document.getElementById('goTitle').textContent = 'WAKTU HABIS!';
+    document.getElementById('goSub').innerHTML = `Waktu <strong>${loserName}</strong> habis.<br><strong>${winnerName}</strong> menang! 🏆`;
+    document.getElementById('gameover').style.display = 'flex';
+  }
+
+  function resetGame() {
+    clearInterval(interval);
+    gameRunning = false;
+    gameStarted = false;
+    paused = false;
+
+    p1TimeLeft = selectedTime * 60;
+    p2TimeLeft = selectedTime * 60;
+
+    if (p1Color === 'white') currentTurn = 1;
+    else currentTurn = 2;
+
+    document.getElementById('timer1').textContent = formatTime(p1TimeLeft);
+    document.getElementById('timer2').textContent = formatTime(p2TimeLeft);
+    document.getElementById('timer1').classList.remove('danger');
+    document.getElementById('timer2').classList.remove('danger');
+
+    document.getElementById('pauseBtn').classList.remove('paused');
+    document.getElementById('pauseBtn').textContent = '⏸';
+    document.getElementById('gameover').style.display = 'none';
+
+    updatePanelStates();
+    updateTurnIndicator('SIAP');
+  }
+
+  function restartSame() {
+    document.getElementById('gameover').style.display = 'none';
+    resetGame();
+  }
+
+  function backToSetup() {
+    clearInterval(interval);
+    gameRunning = false;
+    gameStarted = false;
+    paused = false;
+    document.getElementById('gameover').style.display = 'none';
+    document.getElementById('game').style.display = 'none';
+    document.getElementById('setup').style.display = 'flex';
+  }
+
+  // Keyboard support: spacebar to switch turn
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (document.getElementById('game').style.display === 'flex') {
+        if (paused) { togglePause(); return; }
+        switchTurn(currentTurn);
+      }
+    }
+    if (e.code === 'Escape') togglePause();
+  });
+</script>
 </body>
 </html>
