@@ -26,21 +26,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow-x: hidden;
   }
+
 
   #setup {
     width: 100%;
     max-width: 420px;
-    padding: 32px 24px;
+    padding: 16px 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 14px;
+    overflow-y: auto;
+    max-height: 100vh;
   }
 
   .setup-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 52px;
+    font-size: clamp(36px, 11vw, 52px);
     color: var(--accent);
     text-align: center;
     letter-spacing: 4px;
@@ -48,16 +51,16 @@
   }
 
   .setup-title span { color: #fff; }
-  .chess-icon { text-align: center; font-size: 48px; margin-bottom: -8px; }
+  .chess-icon { text-align: center; font-size: 36px; margin-bottom: -4px; }
 
   .player-setup {
     background: #1E1E1E;
     border: 1px solid #333;
     border-radius: 16px;
-    padding: 20px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 
   .player-setup-title {
@@ -111,7 +114,7 @@
     background: #1E1E1E;
     border: 1px solid #333;
     border-radius: 16px;
-    padding: 20px;
+    padding: 14px 16px;
   }
 
   .time-label {
