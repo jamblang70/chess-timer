@@ -420,6 +420,34 @@
   }
 
   .player-panel.just-switched { animation: activateFlash 0.18s ease-out; }
+
+  /* Increment flash badge */
+  .inc-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 9vw, 52px);
+    letter-spacing: 3px;
+    color: var(--green);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    text-shadow: 0 2px 24px rgba(39,174,96,0.7);
+    transition: none;
+  }
+
+  .inc-badge.show {
+    animation: incPop 0.7s ease-out forwards;
+  }
+
+  @keyframes incPop {
+    0%   { opacity: 0; transform: translateY(0) scale(0.8); }
+    20%  { opacity: 1; transform: translateY(-8px) scale(1.1); }
+    70%  { opacity: 1; transform: translateY(-14px) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  }
 </style>
 </head>
 <body>
@@ -465,12 +493,23 @@
     </div>
   </div>
 
+  <div class="time-section" id="inc-section">
+    <div class="time-label">Increment</div>
+    <div class="time-options" id="inc-options" style="grid-template-columns: repeat(4,1fr)">
+      <div class="time-opt" onclick="setIncrement(0,this)">Tidak ada</div>
+      <div class="time-opt active" onclick="setIncrement(10,this)">+10 dtk</div>
+      <div class="time-opt" onclick="setIncrement(15,this)">+15 dtk</div>
+      <div class="time-opt" onclick="setIncrement(30,this)">+30 dtk</div>
+    </div>
+  </div>
+
   <button class="start-btn" onclick="startGame()">MULAI PERMAINAN</button>
 </div>
 
 <!-- GAME -->
 <div id="game">
   <div class="player-panel top inactive" id="panel2" onclick="switchTurn(2)">
+    <div class="inc-badge" id="inc2">+10</div>
     <div class="panel-content">
       <div class="tap-hint">KETUK UNTUK PINDAH GILIRAN</div>
       <div class="timer-wrap" id="tw2">
@@ -490,6 +529,7 @@
   </div>
 
   <div class="player-panel bottom active" id="panel1" onclick="switchTurn(1)">
+    <div class="inc-badge" id="inc1">+10</div>
     <div class="panel-content">
       <div class="player-label">GILIRAN ANDA</div>
       <div class="player-name-display" id="name1">Pemain 1</div>
@@ -515,6 +555,7 @@
 
 <script>
   let selectedTime = 5;
+  let incrementSec = 10; // seconds added per move
   let p1Color = 'white', p2Color = 'black';
 
   // Time stored in tenths of a second
@@ -548,6 +589,12 @@
       selectedTime = parseInt(val);
       document.querySelectorAll('.time-opt').forEach(e => e.classList.remove('active'));
     }
+  }
+
+  function setIncrement(sec, el) {
+    incrementSec = sec;
+    document.querySelectorAll('#inc-options .time-opt').forEach(e => e.classList.remove('active'));
+    if (el) el.classList.add('active');
   }
 
   function renderTimer(p, tenths) {
@@ -585,6 +632,9 @@
     gameStarted = false; gameRunning = false; paused = false;
     lastTs = null; acc = 0;
 
+    // Sync increment badge text
+    document.getElementById('inc1').textContent = incrementSec > 0 ? '+' + incrementSec + ' dtk' : '';
+    document.getElementById('inc2').textContent = incrementSec > 0 ? '+' + incrementSec + ' dtk' : '';
     setPanels();
     setIndicator('SIAP');
     document.getElementById('pauseBtn').className = 'control-btn btn-pause';
@@ -619,6 +669,19 @@
       setPanels();
       setIndicator('JALAN');
       return;
+    }
+
+    // Add increment to the player who just moved
+    if (incrementSec > 0) {
+      if (currentTurn === 1) {
+        p1Time += incrementSec * 10;
+        renderTimer(1, p1Time);
+        showIncrement(1);
+      } else {
+        p2Time += incrementSec * 10;
+        renderTimer(2, p2Time);
+        showIncrement(2);
+      }
     }
 
     currentTurn = currentTurn === 1 ? 2 : 1;
@@ -668,6 +731,15 @@
       lastTs = null; acc = 0;
       rafId = requestAnimationFrame(tick);
     }
+  }
+
+  function showIncrement(p) {
+    if (incrementSec <= 0) return;
+    const el = document.getElementById('inc' + p);
+    el.textContent = '+' + incrementSec + ' dtk';
+    el.classList.remove('show');
+    void el.offsetWidth; // reflow
+    el.classList.add('show');
   }
 
   function endGame(loser) {
