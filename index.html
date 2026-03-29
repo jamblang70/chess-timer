@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chess Timer</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#C8993C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chess Timer">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -448,6 +454,185 @@
     70%  { opacity: 1; transform: translateY(-14px) scale(1); }
     100% { opacity: 0; transform: translateY(-20px) scale(0.95); }
   }
+
+  /* Move counter */
+  .move-counter {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #444;
+    min-width: 48px;
+    text-align: center;
+  }
+
+  /* Separate time per player toggle */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0 4px;
+  }
+
+  .toggle-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 1px;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+  }
+
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #333;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 3px; top: 3px;
+    background: #888;
+    border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .toggle-switch input:checked + .toggle-slider { background: rgba(200,153,60,0.3); }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background: var(--accent); }
+
+  /* Increment mode selector */
+  .mode-options {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 9px 6px;
+    background: #2A2A2A;
+    border: 2px solid #333;
+    border-radius: 10px;
+    color: #999;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+  }
+
+  .mode-btn:hover { border-color: #555; color: #ccc; }
+  .mode-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,153,60,0.1); }
+
+  /* Theme selector */
+  .theme-options {
+    display: flex;
+    gap: 8px;
+  }
+
+  .theme-btn {
+    flex: 1;
+    padding: 9px 6px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .theme-btn.active { border-color: var(--accent); }
+  .theme-btn[data-theme="classic"] { background: #1E1E1E; color: #C8993C; }
+  .theme-btn[data-theme="green"] { background: #1A2A1A; color: #4CAF50; }
+  .theme-btn[data-theme="blue"] { background: #1A1A2A; color: #5B9BD5; }
+
+  /* Gameover stats */
+  .gameover-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 4px;
+  }
+
+  .stat-box {
+    flex: 1;
+    background: #1A1A1A;
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 6px;
+  }
+
+  .stat-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #ccc;
+    margin-bottom: 4px;
+  }
+
+  .stat-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+
+  .stat-moves {
+    font-size: 12px;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  /* Theme: green */
+  body.theme-green { --accent: #4CAF50; --accent-light: #66BB6A; }
+  body.theme-green .player-panel.bottom { background: #E8F5E9; }
+  body.theme-green .player-panel.active.bottom { background: #DCEDC8; }
+  body.theme-green .bottom .timer-wrap { color: #1A2A1A; }
+  body.theme-green .bottom .player-name-display { color: #1A2A1A; }
+
+  /* Theme: blue */
+  body.theme-blue { --accent: #5B9BD5; --accent-light: #7EB3E8; }
+  body.theme-blue .player-panel.bottom { background: #E3EEF8; }
+  body.theme-blue .player-panel.active.bottom { background: #D0E4F5; }
+  body.theme-blue .bottom .timer-wrap { color: #0A1A2A; }
+  body.theme-blue .bottom .player-name-display { color: #0A1A2A; }
+
+  /* Delay flash badge */
+  .delay-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #5B9BD5;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .delay-badge.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -477,7 +662,7 @@
 
   <div class="time-section">
     <div class="time-label">Waktu per Pemain</div>
-    <div class="time-options">
+    <div class="time-options" id="p1-time-options">
       <div class="time-opt" onclick="setTime(1,this)">1 min</div>
       <div class="time-opt active" onclick="setTime(5,this)">5 min</div>
       <div class="time-opt" onclick="setTime(10,this)">10 min</div>
@@ -494,12 +679,67 @@
   </div>
 
   <div class="time-section" id="inc-section">
-    <div class="time-label">Increment</div>
-    <div class="time-options" id="inc-options" style="grid-template-columns: repeat(4,1fr)">
-      <div class="time-opt" onclick="setIncrement(0,this)">Tidak ada</div>
-      <div class="time-opt active" onclick="setIncrement(10,this)">+10 dtk</div>
-      <div class="time-opt" onclick="setIncrement(15,this)">+15 dtk</div>
-      <div class="time-opt" onclick="setIncrement(30,this)">+30 dtk</div>
+    <div class="time-label">Mode Increment</div>
+    <div class="mode-options">
+      <div class="mode-btn active" data-mode="none" onclick="setIncrementMode('none',this)">Tidak Ada</div>
+      <div class="mode-btn" data-mode="fischer" onclick="setIncrementMode('fischer',this)">Fischer</div>
+      <div class="mode-btn" data-mode="bronstein" onclick="setIncrementMode('bronstein',this)">Bronstein</div>
+      <div class="mode-btn" data-mode="delay" onclick="setIncrementMode('delay',this)">Delay</div>
+    </div>
+    <div id="inc-amount-row" style="display:none">
+      <div class="time-label" style="margin-bottom:10px">Jumlah Detik</div>
+      <div class="time-options" id="inc-options" style="grid-template-columns: repeat(4,1fr)">
+        <div class="time-opt" onclick="setIncrement(2,this)">2 dtk</div>
+        <div class="time-opt active" onclick="setIncrement(5,this)">5 dtk</div>
+        <div class="time-opt" onclick="setIncrement(10,this)">10 dtk</div>
+        <div class="time-opt" onclick="setIncrement(15,this)">15 dtk</div>
+        <div class="time-opt" onclick="setIncrement(30,this)">30 dtk</div>
+        <div class="time-opt" onclick="setIncrement(60,this)">60 dtk</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="time-section">
+    <div class="time-label">Tema</div>
+    <div class="theme-options">
+      <div class="theme-btn active" data-theme="classic" onclick="setTheme('classic',this)">♟ Klasik</div>
+      <div class="theme-btn" data-theme="green" onclick="setTheme('green',this)">♘ Hijau</div>
+      <div class="theme-btn" data-theme="blue" onclick="setTheme('blue',this)">♗ Biru</div>
+    </div>
+  </div>
+
+  <div class="time-section">
+    <div class="toggle-row">
+      <span class="toggle-label">Waktu berbeda per pemain</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="diffTimeToggle" onchange="toggleDiffTime(this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div id="p2-time-section" style="display:none; margin-top:12px">
+      <div class="time-label" style="margin-bottom:10px">Waktu Pemain 2</div>
+      <div class="time-options" id="p2-time-options" style="grid-template-columns: repeat(4,1fr)">
+        <div class="time-opt" onclick="setTimeP2(1,this)">1 min</div>
+        <div class="time-opt active" onclick="setTimeP2(5,this)">5 min</div>
+        <div class="time-opt" onclick="setTimeP2(10,this)">10 min</div>
+        <div class="time-opt" onclick="setTimeP2(15,this)">15 min</div>
+        <div class="time-opt" onclick="setTimeP2(20,this)">20 min</div>
+        <div class="time-opt" onclick="setTimeP2(30,this)">30 min</div>
+      </div>
+      <div class="custom-time" style="margin-top:8px">
+        <input type="number" id="customTimeP2" min="1" max="180" placeholder="Custom" oninput="setCustomTimeP2(this.value)">
+        <label>menit (custom)</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="time-section">
+    <div class="toggle-row">
+      <span class="toggle-label">Suara</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="soundToggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
     </div>
   </div>
 
@@ -525,6 +765,7 @@
     <button class="control-btn btn-back" onclick="backToSetup()" title="Menu">⚙</button>
     <button class="control-btn btn-reset" onclick="resetGame()" title="Reset">↺</button>
     <div class="turn-indicator" id="turnInd">SIAP</div>
+    <div class="move-counter" id="moveCount">0</div>
     <button class="control-btn btn-pause" id="pauseBtn" onclick="togglePause()" title="Pause">⏸</button>
   </div>
 
@@ -547,6 +788,20 @@
   <div class="gameover-icon">⏱</div>
   <div class="gameover-title" id="goTitle">WAKTU HABIS!</div>
   <div class="gameover-sub" id="goSub"></div>
+  <div class="gameover-stats" id="goStats">
+    <div class="stat-box">
+      <div class="stat-label">Pemain 1</div>
+      <div class="stat-name" id="goName1">-</div>
+      <div class="stat-time" id="goTime1">-</div>
+      <div class="stat-moves" id="goMoves1">- giliran</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Pemain 2</div>
+      <div class="stat-name" id="goName2">-</div>
+      <div class="stat-time" id="goTime2">-</div>
+      <div class="stat-moves" id="goMoves2">- giliran</div>
+    </div>
+  </div>
   <div class="gameover-actions">
     <button class="btn-secondary" onclick="backToSetup()">Ubah Pengaturan</button>
     <button class="btn-primary" onclick="restartSame()">Main Lagi</button>
@@ -554,16 +809,86 @@
 </div>
 
 <script>
-  let selectedTime = 5;
-  let incrementSec = 10; // seconds added per move
-  let p1Color = 'white', p2Color = 'black';
+  // --- PWA Service Worker ---
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
 
-  // Time stored in tenths of a second
+  // --- Audio ---
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+
+  function getAudioCtx() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    return audioCtx;
+  }
+
+  function playClick() {
+    if (!document.getElementById('soundToggle').checked) return;
+    try {
+      const ctx = getAudioCtx();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880;
+      g.gain.setValueAtTime(0.18, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      o.start(); o.stop(ctx.currentTime + 0.08);
+    } catch(e) {}
+  }
+
+  function playAlarm() {
+    if (!document.getElementById('soundToggle').checked) return;
+    try {
+      const ctx = getAudioCtx();
+      [0, 0.18, 0.36].forEach(offset => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = 440;
+        g.gain.setValueAtTime(0.3, ctx.currentTime + offset);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + offset + 0.15);
+        o.start(ctx.currentTime + offset);
+        o.stop(ctx.currentTime + offset + 0.15);
+      });
+    } catch(e) {}
+  }
+
+  function playLowBeep() {
+    if (!document.getElementById('soundToggle').checked) return;
+    try {
+      const ctx = getAudioCtx();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 330;
+      g.gain.setValueAtTime(0.15, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      o.start(); o.stop(ctx.currentTime + 0.12);
+    } catch(e) {}
+  }
+
+  // --- State ---
+  let selectedTime = 5, selectedTimeP2 = 5;
+  let incrementSec = 5;
+  let incrementMode = 'none'; // none | fischer | bronstein | delay
+  let p1Color = 'white', p2Color = 'black';
+  let diffTime = false;
+
   let p1Time, p2Time;
+  let p1StartTime, p2StartTime; // for stats
+  let p1Moves = 0, p2Moves = 0;
+  let totalMoves = 0;
   let currentTurn = 1;
   let gameStarted = false, gameRunning = false, paused = false;
   let rafId = null, lastTs = null, acc = 0;
 
+  // Bronstein/Delay: track time at turn start
+  let turnStartTime = 0;
+  let delayActive = false; // for delay mode: is delay still counting?
+  let delayRemaining = 0;
+
+  // --- Setup ---
   function selectPiece(player, color) {
     if (player === 1) { p1Color = color; p2Color = color === 'white' ? 'black' : 'white'; }
     else { p2Color = color; p1Color = color === 'white' ? 'black' : 'white'; }
@@ -579,7 +904,7 @@
 
   function setTime(min, el) {
     selectedTime = min;
-    document.querySelectorAll('.time-opt').forEach(e => e.classList.remove('active'));
+    document.querySelectorAll('#p1-time-options .time-opt').forEach(e => e.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('customTime').value = '';
   }
@@ -587,8 +912,34 @@
   function setCustomTime(val) {
     if (val && +val > 0) {
       selectedTime = parseInt(val);
-      document.querySelectorAll('.time-opt').forEach(e => e.classList.remove('active'));
+      document.querySelectorAll('#p1-time-options .time-opt').forEach(e => e.classList.remove('active'));
     }
+  }
+
+  function setTimeP2(min, el) {
+    selectedTimeP2 = min;
+    document.querySelectorAll('#p2-time-options .time-opt').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('customTimeP2').value = '';
+  }
+
+  function setCustomTimeP2(val) {
+    if (val && +val > 0) {
+      selectedTimeP2 = parseInt(val);
+      document.querySelectorAll('#p2-time-options .time-opt').forEach(e => e.classList.remove('active'));
+    }
+  }
+
+  function toggleDiffTime(checked) {
+    diffTime = checked;
+    document.getElementById('p2-time-section').style.display = checked ? 'block' : 'none';
+  }
+
+  function setIncrementMode(mode, el) {
+    incrementMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('inc-amount-row').style.display = mode === 'none' ? 'none' : 'block';
   }
 
   function setIncrement(sec, el) {
@@ -597,6 +948,13 @@
     if (el) el.classList.add('active');
   }
 
+  function setTheme(theme, el) {
+    document.querySelectorAll('.theme-btn').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+    document.body.className = theme === 'classic' ? '' : 'theme-' + theme;
+  }
+
+  // --- Timer render ---
   function renderTimer(p, tenths) {
     const tot = Math.max(0, tenths);
     const totalSec = Math.floor(tot / 10);
@@ -604,21 +962,30 @@
     const m = Math.floor(totalSec / 60);
     const s = totalSec % 60;
     const main = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-
     document.getElementById('tm' + p).textContent = main;
     document.getElementById('tt' + p).textContent = tenth;
-
     const tw = document.getElementById('tw' + p);
     if (tot <= 100) tw.classList.add('danger');
     else tw.classList.remove('danger');
   }
 
+  function fmtTime(tenths) {
+    const s = Math.floor(tenths / 10);
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  }
+
+  // --- Game start ---
   function startGame() {
     const n1 = document.getElementById('p1name').value.trim() || 'Pemain 1';
     const n2 = document.getElementById('p2name').value.trim() || 'Pemain 2';
 
     p1Time = selectedTime * 600;
-    p2Time = selectedTime * 600;
+    p2Time = (diffTime ? selectedTimeP2 : selectedTime) * 600;
+    p1StartTime = p1Time;
+    p2StartTime = p2Time;
+    p1Moves = 0; p2Moves = 0; totalMoves = 0;
 
     document.getElementById('name1').textContent = n1;
     document.getElementById('name2').textContent = n2;
@@ -631,10 +998,13 @@
     currentTurn = p1Color === 'white' ? 1 : 2;
     gameStarted = false; gameRunning = false; paused = false;
     lastTs = null; acc = 0;
+    delayActive = false; delayRemaining = 0;
 
-    // Sync increment badge text
-    document.getElementById('inc1').textContent = incrementSec > 0 ? '+' + incrementSec + ' dtk' : '';
-    document.getElementById('inc2').textContent = incrementSec > 0 ? '+' + incrementSec + ' dtk' : '';
+    const incLabel = incrementMode !== 'none' ? '+' + incrementSec + ' dtk' : '';
+    document.getElementById('inc1').textContent = incLabel;
+    document.getElementById('inc2').textContent = incLabel;
+    document.getElementById('moveCount').textContent = '0';
+
     setPanels();
     setIndicator('SIAP');
     document.getElementById('pauseBtn').className = 'control-btn btn-pause';
@@ -658,33 +1028,50 @@
     el.className = 'turn-indicator' + (gameRunning && !paused ? ' running' : '');
   }
 
+  // --- Turn switch ---
   function switchTurn(fromPlayer) {
     if (paused) return;
     if (gameRunning && fromPlayer !== currentTurn) return;
 
+    playClick();
+
     if (!gameStarted) {
       gameStarted = true; gameRunning = true;
       lastTs = null; acc = 0;
+      turnStartTime = currentTurn === 1 ? p1Time : p2Time;
+      if (incrementMode === 'delay') { delayActive = true; delayRemaining = incrementSec * 10; }
       rafId = requestAnimationFrame(tick);
       setPanels();
       setIndicator('JALAN');
       return;
     }
 
-    // Add increment to the player who just moved
-    if (incrementSec > 0) {
-      if (currentTurn === 1) {
-        p1Time += incrementSec * 10;
-        renderTimer(1, p1Time);
-        showIncrement(1);
-      } else {
-        p2Time += incrementSec * 10;
-        renderTimer(2, p2Time);
-        showIncrement(2);
+    // Apply increment based on mode
+    if (incrementMode === 'fischer') {
+      if (currentTurn === 1) { p1Time += incrementSec * 10; renderTimer(1, p1Time); showIncrement(1); }
+      else { p2Time += incrementSec * 10; renderTimer(2, p2Time); showIncrement(2); }
+    } else if (incrementMode === 'bronstein') {
+      // Add back only the time actually used, up to incrementSec
+      const curTime = currentTurn === 1 ? p1Time : p2Time;
+      const used = turnStartTime - curTime;
+      const addBack = Math.min(used, incrementSec * 10);
+      if (addBack > 0) {
+        if (currentTurn === 1) { p1Time += addBack; renderTimer(1, p1Time); showIncrement(1); }
+        else { p2Time += addBack; renderTimer(2, p2Time); showIncrement(2); }
       }
     }
+    // delay: no add, just reset delay on next turn
+
+    // Move count
+    if (currentTurn === 1) p1Moves++;
+    else p2Moves++;
+    totalMoves++;
+    document.getElementById('moveCount').textContent = totalMoves;
 
     currentTurn = currentTurn === 1 ? 2 : 1;
+    turnStartTime = currentTurn === 1 ? p1Time : p2Time;
+    if (incrementMode === 'delay') { delayActive = true; delayRemaining = incrementSec * 10; }
+
     const np = document.getElementById('panel' + currentTurn);
     np.classList.add('just-switched');
     setTimeout(() => np.classList.remove('just-switched'), 200);
@@ -692,6 +1079,7 @@
     setIndicator('JALAN');
   }
 
+  // --- Tick ---
   function tick(ts) {
     if (!gameRunning || paused) { lastTs = null; return; }
 
@@ -699,13 +1087,23 @@
       acc += ts - lastTs;
       while (acc >= 100) {
         acc -= 100;
+
+        // Delay mode: count down delay first, don't decrement player time
+        if (incrementMode === 'delay' && delayActive) {
+          delayRemaining -= 1;
+          if (delayRemaining <= 0) { delayActive = false; delayRemaining = 0; }
+          continue;
+        }
+
         if (currentTurn === 1) {
           p1Time--;
           renderTimer(1, p1Time);
+          if (p1Time <= 100 && p1Time > 0) playLowBeep();
           if (p1Time <= 0) { endGame(1); return; }
         } else {
           p2Time--;
           renderTimer(2, p2Time);
+          if (p2Time <= 100 && p2Time > 0) playLowBeep();
           if (p2Time <= 0) { endGame(2); return; }
         }
       }
@@ -715,6 +1113,7 @@
     rafId = requestAnimationFrame(tick);
   }
 
+  // --- Pause ---
   function togglePause() {
     if (!gameStarted) return;
     paused = !paused;
@@ -733,32 +1132,49 @@
     }
   }
 
+  // --- Increment badge ---
   function showIncrement(p) {
-    if (incrementSec <= 0) return;
+    if (incrementMode === 'none') return;
     const el = document.getElementById('inc' + p);
-    el.textContent = '+' + incrementSec + ' dtk';
     el.classList.remove('show');
-    void el.offsetWidth; // reflow
+    void el.offsetWidth;
     el.classList.add('show');
   }
 
+  // --- End game ---
   function endGame(loser) {
     gameRunning = false;
     cancelAnimationFrame(rafId);
+    playAlarm();
+
     const ln = document.getElementById('name' + loser).textContent;
-    const wn = document.getElementById('name' + (loser === 1 ? 2 : 1)).textContent;
+    const winner = loser === 1 ? 2 : 1;
+    const wn = document.getElementById('name' + winner).textContent;
+
     document.getElementById('goTitle').textContent = 'WAKTU HABIS!';
     document.getElementById('goSub').innerHTML = `Waktu <strong>${ln}</strong> habis.<br><strong>${wn}</strong> menang! 🏆`;
+
+    // Stats
+    document.getElementById('goName1').textContent = document.getElementById('name1').textContent;
+    document.getElementById('goName2').textContent = document.getElementById('name2').textContent;
+    document.getElementById('goTime1').textContent = fmtTime(p1Time);
+    document.getElementById('goTime2').textContent = fmtTime(p2Time);
+    document.getElementById('goMoves1').textContent = p1Moves + ' giliran';
+    document.getElementById('goMoves2').textContent = p2Moves + ' giliran';
+
     document.getElementById('gameover').style.display = 'flex';
   }
 
+  // --- Reset / restart ---
   function resetGame() {
     cancelAnimationFrame(rafId);
     gameRunning = false; gameStarted = false; paused = false;
     lastTs = null; acc = 0;
+    p1Moves = 0; p2Moves = 0; totalMoves = 0;
+    delayActive = false; delayRemaining = 0;
 
     p1Time = selectedTime * 600;
-    p2Time = selectedTime * 600;
+    p2Time = (diffTime ? selectedTimeP2 : selectedTime) * 600;
     currentTurn = p1Color === 'white' ? 1 : 2;
 
     renderTimer(1, p1Time);
@@ -766,6 +1182,7 @@
     document.getElementById('pauseBtn').className = 'control-btn btn-pause';
     document.getElementById('pauseBtn').textContent = '⏸';
     document.getElementById('gameover').style.display = 'none';
+    document.getElementById('moveCount').textContent = '0';
     setPanels();
     setIndicator('SIAP');
   }
@@ -783,6 +1200,7 @@
     document.getElementById('setup').style.display = 'flex';
   }
 
+  // --- Keyboard ---
   document.addEventListener('keydown', e => {
     if (e.code === 'Space') {
       e.preventDefault();
